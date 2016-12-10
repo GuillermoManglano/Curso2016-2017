@@ -1,0 +1,58 @@
+#Prefijos para todo el documento, si se quieren hacer queries de una en una se tendran que aniadir a cada query (echa, como en el ejercicio, en http://sandbox.linkeddata.es/sparql)
+
+prefix cubo: <http://purl.org/linked-data/cube#>
+prefix vocabulario: <http://example.org/myVocabulary#>
+
+
+#1. Cuantos accidentes hubo en Madrid en 2013
+
+select sum(?accidentes) AS ?Accidents
+where{
+?qr a cubo:Observation.
+?qr vocabulario:numberOfAccidents ?accidentes.
+}
+
+#2. Numero de accidentes en Usera por cada tipo de accidente
+
+select distinct ?type ?accidentes where {
+?qr a cubo:Observation;
+vocabulario:relatedDistrict  "USERA";
+vocabulario:hasAccidentType ?type ;
+vocabulario:numberOfAccidents ?accidentes .
+} LIMIT 100 
+
+
+#3. Numero multiples colisiones por distrito
+
+select ?distrito ?accidentes
+where{
+?qr a cubo:Observation.
+?qr vocabulario:relatedDistrict ?distrito.
+?qr vocabulario:hasAccidentType vocabulario:MultipleCollision.
+?qr vocabulario:numberOfAccidents ?accidentes.
+}
+order by(?distrito)
+
+
+#4. Distrito con mayor numero de caidas en 2013
+select ?distrito max(?accidentes) as ?accidentes
+where {
+?qr a cubo:Observation.
+?qr vocabulario:relatedDistrict ?distrito.
+?qr vocabulario:hasAccidentType vocabulario:BicycleFall.
+?qr vocabulario:numberOfAccidents ?accidentes.
+}
+order by desc(?accidentes)
+limit 1
+
+
+#5. Distritos con mas de 500 accidentes en 2013
+
+SELECT DISTINCT ?distrito WHERE {
+?qr a cubo:Observation ;
+vocabulario:relatedDistrict ?distrito;
+vocabulario:hasAccidentType ?tipo ;
+vocabulario:numberOfAccidents ?accidentes .
+FILTER (?accidentes > 500) 
+} LIMIT 100
+

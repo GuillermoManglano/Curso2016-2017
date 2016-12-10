@@ -1,0 +1,139 @@
+1. Todas las clases
+
+select distinct ?clase where {?x a ?clase}
+
+2. Todas las subclases
+
+select distinct ?subclases
+where{
+  ?subclases rdfs:subClassOf <http://GP-onto.fi.upm.es/exercise2#Establishment>
+}
+
+3. Instancia clase
+
+select distinct ?instanciaClase
+where{
+  ?instanciaClase a <http://GP-onto.fi.upm.es/exercise2#City>
+}
+
+4. Numero habitantes Santiago
+
+prefix prfx:<http://GP-onto.fi.upm.es/exercise2#>
+select ?numeroHabitantes
+where{
+prfx:Santiago_de_Compostela prfx:hasInhabitantNumber ?numeroHabitantes
+}
+
+
+5. Numero habitantes Santiago y Arzua 
+
+prefix prfx: <http://GP-onto.fi.upm.es/exercise2#>
+select distinct ?santiagoInhabitants ?arzuaInhabitants
+where{
+  prfx:Santiago_de_Compostela prfx:hasInhabitantNumber ?santiagoInhabitants .
+  prfx:Arzua prfx:hasInhabitantNumber ?arzuaInhabitants
+} 
+
+
+6. Lugares, numero habitantes, orden ascendente
+
+prefix prfx:<http://GP-onto.fi.upm.es/exercise2#>
+select ?lugar ?numeroHabitantes
+where{
+?lugar prfx:hasInhabitantNumber ?numeroHabitantes
+} ORDER BY ASC(?lugar)
+
+7. Instancias de Localidad con su numero de habitantes, si existe
+
+prefix prfx:<http://GP-onto.fi.upm.es/exercise2#>
+select ?instancias ?numeroHabitantes
+where{
+?instancias a ?x.
+?x rdfs:subClassOf prfx:Locality.
+optional {?instancias prfx:hasInhabitantNumber ?numeroHabitantes}
+}
+
+8. Todos los lugares con mas de 20000 habitantes
+
+prefix prfx: <http://GP-onto.fi.upm.es/exercise2#>
+select distinct ?lugar ?habitantes
+where{
+  ?lugar prfx:hasInhabitantNumber ?habitantes
+  FILTER (xsd:integer(?habitantes) > xsd:integer("200000"))
+}
+
+9. Informacion direccion: calle, numero, localidad, provincia
+
+prefix prfx: <http://GP-onto.fi.upm.es/exercise2#>
+select distinct ?calle ?numero ?localidad ?provincia
+where{
+  prfx:Pazo_Breogan prfx:hasAddress ?instancia .
+  ?instancia prfx:hasStreet ?calle .
+  ?instancia prfx:hasNumber ?numero .
+  prfx:Pazo_Breogan prfx:isPlacedIn ?localidad .
+  ?localidad prfx:inProvince ?provincia
+}
+
+
+10. Todas las subclases de ubicacion
+
+prefix prfx: <http://GP-onto.fi.upm.es/exercise2#>
+select distinct ?subclases
+where{
+?subclases rdfs:subClassOf prfx:Location
+}
+
+
+11. Todas las instancias de localidad
+
+prefix prfx:<http://GP-onto.fi.upm.es/exercise2#>
+select distinct ?localidad
+where {?sub rdfs:subClassOf prfx:Locality.
+?localidad a ?sub}
+
+
+12. Describir recurso con rdfs:label "Madrid”
+
+select distinct ?recurso
+where{
+ ?recurso rdfs:label "Madrid"
+}
+
+
+13. Propiedad isIn
+
+prefix uri:<http://GP-onto.fi.upm.es/exercise2#>
+construct {
+?ciudad uri:isIn ?provincia
+}
+where{
+?ciudad uri:isPlacedIn ?datosCiudad.
+?datosCiudad uri:inProvince ?provincia
+}
+
+
+14. Tiene Ciudad alguna instancia
+
+prefix prfx:<http://GP-onto.fi.upm.es/exercise2#>
+ask
+where{
+?instancias a prfx:Town
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
